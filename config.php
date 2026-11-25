@@ -2,21 +2,33 @@
 // Database connection and shared helpers
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-$host = "localhost";
-$dbname = "bookswap";
-$dbuser = "root";
-$dbpass = ""; // Default XAMPP MySQL password is empty
+$host = getenv("DB_HOST") ?: "localhost";
+$dbname = getenv("DB_NAME") ?: "bookswap";
+$dbuser = getenv("DB_USER") ?: "root";
+$dbpass = getenv("DB_PASSWORD");
+$dbport = filter_var(
+    getenv("DB_PORT") ?: "3306",
+    FILTER_VALIDATE_INT,
+    ["options" => ["min_range" => 1, "max_range" => 65535]]
+);
+if ($dbpass === false) $dbpass = "";
+if ($dbport === false) {
+    http_response_code(500);
+    exit("Database configuration error: DB_PORT must be between 1 and 65535.");
+}
 
 try {
     $pdo = new PDO(
-        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+        "mysql:host=$host;port=$dbport;dbname=$dbname;charset=utf8mb4",
         $dbuser,
         $dbpass,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
          PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
     );
 } catch (PDOException $e) {
-    die("Database connection failed. Import database.sql in phpMyAdmin and check config.php. Details: " . htmlspecialchars($e->getMessage()));
+    error_log("BookSwap database connection failed: " . $e->getMessage());
+    http_response_code(500);
+    die("Database connection failed. Check the DB_* settings and ensure database.sql has been imported.");
 }
 
 function e($value) { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }

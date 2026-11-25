@@ -19,7 +19,7 @@ A PHP + MySQL marketplace for students to list, browse, and request second-hand 
 1. Install XAMPP and GitHub Desktop.
 2. In GitHub Desktop, choose **File → Clone repository**, open the **URL** tab, enter `https://github.com/pranaydorle514-blip/booksexchange.git`, and clone it to `C:\xampp\htdocs\BookSwap`. Alternatively, run `git clone https://github.com/pranaydorle514-blip/booksexchange.git C:\xampp\htdocs\BookSwap`.
 3. Start **Apache** and **MySQL** in XAMPP.
-4. Open `http://localhost/phpmyadmin`, import `database.sql`, and check `config.php`. The default database connection is MySQL host `localhost`, user `root`, empty password.
+4. Open `http://localhost/phpmyadmin` and import `database.sql`. By default, the app connects to MySQL host `localhost`, database `bookswap`, user `root`, empty password.
 5. Open `http://localhost/BookSwap/`, choose **Join BookSwap**, and create an account with an email and password.
 
 If upgrading a database created by the earlier WhatsApp-OTP version, run `migration_otp.sql` once in phpMyAdmin before using the password login. It preserves existing phone formatting and the unique phone-number index. Existing email/password accounts retain their passwords.
@@ -29,6 +29,14 @@ If upgrading a database created by the earlier WhatsApp-OTP version, run `migrat
 The repository is public, so anyone can read and clone it. An invited collaborator with **Write** permission can create branches and push code after accepting the GitHub invitation. In GitHub Desktop, select **File → Clone repository** to get their copy. To update an existing clone, select **Fetch origin**, then **Pull origin** when updates are available. Commit changes locally and use **Push origin** to publish them.
 
 Each developer's local XAMPP database is separate. To share listings and requests between computers, deploy the app and database to a shared host; cloning the repository shares source code only.
+
+## Shared hosting configuration
+
+The app reads database settings from `DB_HOST`, `DB_PORT` (defaults to `3306`), `DB_NAME`, `DB_USER`, and `DB_PASSWORD`. Set these in the hosting provider's protected environment-variable settings; never put production database credentials in GitHub or in a committed config file. Create a MySQL database/user with the host, import `database.sql` into it, and point both computers at the same deployed site URL. Use the provider's SSL/HTTPS option before moving real account data.
+
+A no-cost demo option is [InfinityFree](https://www.infinityfree.com/), which currently advertises PHP, MySQL, SSL, and free subdomains, so you do not need to own a domain. Free hosting may have service limits; use a paid host with backups and suitable privacy protections for real personal data.
+
+To move the existing local accounts and listings, export the local `bookswap` database with phpMyAdmin's **Export** → **SQL**, then import that dump into the hosted database. That dump contains account emails and phone numbers; transfer it only to the hosting provider you selected, and never commit or upload the dump to GitHub.
 
 ## Optional email notifications
 
