@@ -1,5 +1,7 @@
 # BookSwap – Second-Hand Book Marketplace
 
+Source project for the [booksexchange GitHub repository](https://github.com/pranaydorle514-blip/booksexchange).
+
 A working PHP + MySQL web application based on the uploaded BookSwap PBL presentation.
 
 ## Features
